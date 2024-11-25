@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Odometria.Encoder;
+import org.firstinspires.ftc.teamcode.Odometry.Encoder;
 
 @TeleOp
 public class TesteOdometria extends LinearOpMode
