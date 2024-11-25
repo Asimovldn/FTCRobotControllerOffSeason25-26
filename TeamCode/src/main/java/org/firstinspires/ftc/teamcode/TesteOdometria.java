@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Auxiliar.Encoder;
+import org.firstinspires.ftc.teamcode.Odometria.Encoder;
 
 @TeleOp
 public class TesteOdometria extends LinearOpMode
@@ -25,7 +25,6 @@ public class TesteOdometria extends LinearOpMode
             double Ticks2Cm = (Encoder.WHEEL_DIAMETER * 3.1415) / Encoder.ENCODER_TICKS;
             telemetry.addData("EncoderPos", odometryEncoder.getPosition());
             telemetry.addData("EncoderVel", odometryEncoder.getAngularVelocity(AngleUnit.DEGREES));
-
 
             int currentPos = odometryEncoder.getPosition();
             displacement = currentPos - lastPos;
