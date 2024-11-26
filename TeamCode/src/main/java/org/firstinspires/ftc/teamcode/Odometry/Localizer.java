@@ -23,7 +23,7 @@ public class Localizer
     int[] lastEncoderTicks = new int[] {0,0};
 
     double lastAngle = 0;
-    double currentAngle;
+    public double currentAngle;
 
     Vector2D currentPosition = initialPosition;
 
@@ -33,7 +33,7 @@ public class Localizer
         parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class,
                 "left_front_drive"));
         lateralEncoder = new Encoder(hardwareMap.get(DcMotorEx.class,
-                "right_front_drive"));
+                "right_back_drive"));
 
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(DriveConstants.imuParameters);
@@ -45,12 +45,18 @@ public class Localizer
 
         encoderTicks = getEncoderTicks();
 
+        double parallelDistanceToCenter = 25;
+        double lateralDistanceToCenter = 21;
+
         double parallelDisplacement = (encoderTicks[0] - lastEncoderTicks[0]) * Encoder.TICKS2CM;
         double lateralDisplacement = (encoderTicks[1] - lastEncoderTicks[1]) * Encoder.TICKS2CM;
 
         currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         double angleDisplacement = currentAngle - lastAngle;
+
+       // parallelDisplacement -= -parallelDistanceToCenter * angleDisplacement;
+        //lateralDisplacement -= -lateralDistanceToCenter * angleDisplacement;
 
         Vector2D robotDisplacement = new Vector2D(0,0);
 
@@ -63,12 +69,17 @@ public class Localizer
             robotDisplacement.y = ((1 - Math.cos(angleDisplacement)) / angleDisplacement) * parallelDisplacement + (Math.sin(angleDisplacement) / angleDisplacement) * lateralDisplacement;
         }
 
-        currentPosition.x += robotDisplacement.x;
-        currentPosition.y += robotDisplacement.y;
+        currentPosition.x += lateralDisplacement;//robotDisplacement.x;
+        currentPosition.y += parallelDisplacement; //robotDisplacement.y;
 
         lastEncoderTicks = encoderTicks;
         lastAngle = currentAngle;
 
+    }
+
+    public Vector2D getCurrentPosition()
+    {
+        return currentPosition;
     }
 
     int[] getEncoderTicks()
