@@ -25,6 +25,8 @@ public class Localizer
     double lastAngle = 0;
     public double currentAngle;
 
+    public double dAngle = 0;
+
     Vector2D currentPosition = initialPosition;
 
     public Localizer(HardwareMap hardwareMap)
@@ -54,23 +56,21 @@ public class Localizer
         currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         double angleDisplacement = currentAngle - lastAngle;
+        angleDisplacement = (angleDisplacement + Math.PI) % (2 * Math.PI) - Math.PI;
+        //angleDisplacement = normalizeAngle(angleDisplacement);
 
-       // parallelDisplacement -= -parallelDistanceToCenter * angleDisplacement;
-        //lateralDisplacement -= -lateralDistanceToCenter * angleDisplacement;
+        dAngle = angleDisplacement;
+
+        parallelDisplacement -= parallelDistanceToCenter * angleDisplacement;
+        lateralDisplacement -= -lateralDistanceToCenter * angleDisplacement;
 
         Vector2D robotDisplacement = new Vector2D(0,0);
 
-        if (angleDisplacement < 0.001)
-        {
-            robotDisplacement.x = (1 - Math.pow(angleDisplacement, 2) / 6) * parallelDisplacement - (angleDisplacement / 2) * lateralDisplacement;
-            robotDisplacement.y = (angleDisplacement / 2) * parallelDisplacement + (1 - Math.pow(angleDisplacement, 2) / 6) * lateralDisplacement;
-        } else {
-            robotDisplacement.x = (Math.sin(angleDisplacement) / angleDisplacement) * parallelDisplacement + ((Math.cos(angleDisplacement) - 1) / angleDisplacement) * lateralDisplacement;
-            robotDisplacement.y = ((1 - Math.cos(angleDisplacement)) / angleDisplacement) * parallelDisplacement + (Math.sin(angleDisplacement) / angleDisplacement) * lateralDisplacement;
-        }
+        robotDisplacement.x += Math.cos(angleDisplacement) * parallelDisplacement - Math.sin(angleDisplacement) * lateralDisplacement;
+        robotDisplacement.y += Math.sin(angleDisplacement) * parallelDisplacement + Math.cos(angleDisplacement) * lateralDisplacement;
 
-        currentPosition.x += lateralDisplacement;//robotDisplacement.x;
-        currentPosition.y += parallelDisplacement; //robotDisplacement.y;
+        currentPosition.x += robotDisplacement.x;
+        currentPosition.y += robotDisplacement.y;
 
         lastEncoderTicks = encoderTicks;
         lastAngle = currentAngle;
@@ -86,6 +86,12 @@ public class Localizer
     {
         return new int[] {parallelEncoder.getPosition(), lateralEncoder.getPosition()};
     }
+
+    public double normalizeAngle(double angle)
+    {
+        return angle < 0 ? angle + 360 : angle;
+    }
+
 
 
     

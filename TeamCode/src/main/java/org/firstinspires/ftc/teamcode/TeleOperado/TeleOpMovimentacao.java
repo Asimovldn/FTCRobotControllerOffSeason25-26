@@ -56,6 +56,7 @@ public class TeleOpMovimentacao extends OpMode
         telemetry.addData("x ", currentPosition.x);
         telemetry.addData("y ", currentPosition.y);
         telemetry.addData("angle ", Math.toDegrees(localizer.currentAngle));
+        telemetry.addData("dAngle ", localizer.dAngle);
         telemetry.update();
     }
 }
