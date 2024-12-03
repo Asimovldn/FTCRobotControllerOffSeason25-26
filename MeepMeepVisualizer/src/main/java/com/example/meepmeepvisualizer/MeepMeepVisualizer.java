@@ -24,7 +24,8 @@ public class MeepMeepVisualizer {
                 .strafeTo(new Vector2d(-57,-57))
                 .strafeToLinearHeading(new Vector2d(-45, -24), Math.PI).strafeToLinearHeading(new Vector2d(-53,-53), Math.PI / 4)
                 .strafeTo(new Vector2d(-57,-57))
-                .strafeToLinearHeading(new Vector2d(53,-60), Math.PI)
+                .strafeToLinearHeading(new Vector2d(51,-48), Math.PI)
+                .strafeTo(new Vector2d(50,-57))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
