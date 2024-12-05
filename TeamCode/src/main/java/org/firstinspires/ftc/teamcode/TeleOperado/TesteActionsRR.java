@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOperado;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,15 +17,29 @@ public class TesteActionsRR extends LinearOpMode
     {
         Outtake outtake = new Outtake(hardwareMap);
 
+        TeleOpActions teleOpActions = new TeleOpActions();
+
+        FtcDashboard ftcDashboard = FtcDashboard.getInstance();
+
         waitForStart();
 
-        if (isStopRequested()) return;
-
-        Actions.runBlocking(new SequentialAction(outtake.servoToOut()));
-
-        while (!isStopRequested())
+        while (opModeIsActive())
         {
+            TelemetryPacket packet = new TelemetryPacket();
 
+            if (gamepad1.a)
+            {
+                teleOpActions.addToQueue(new SequentialAction(outtake.servoToOut()));
+            }
+
+            if (gamepad1.b)
+            {
+                teleOpActions.addToQueue(new SequentialAction(outtake.servoToIn()));
+            }
+
+            teleOpActions.runActions(packet);
+
+            ftcDashboard.sendTelemetryPacket(packet);
         }
     }
 }
